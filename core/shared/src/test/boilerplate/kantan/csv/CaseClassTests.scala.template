@@ -24,7 +24,7 @@ import org.scalacheck.Arbitrary.{arbitrary => arb}
 
 object Instances {
   implicit val arbCaseClass1: Arbitrary[CaseClass1]  = Arbitrary(arb[Int].map((CaseClass1.apply _)))
-  implicit val caseClass1codec: RowCodec[CaseClass1] = RowCodec.caseCodec(CaseClass1.apply)(CaseClass1.unapply)
+  implicit val caseClass1codec: RowCodec[CaseClass1] = RowCodec.caseCodec(CaseClass1.apply)(x => Some(x.f1))
   implicit val caseClass1HeaderDecoder: HeaderDecoder[CaseClass1] = HeaderDecoder.decoder("f1")(CaseClass1.apply _)
   implicit val cogenCaseClass1: Cogen[CaseClass1]    = Cogen.cogenInt.contramap(_.f1)
   implicit val arbLegalCaseClass1: Arbitrary[LegalRow[CaseClass1]] = arbLegalValueFromEnc[Seq[String], CaseClass1, kantan.csv.codecs.type]
@@ -32,7 +32,7 @@ object Instances {
   case class CaseClass1(f1: Int)
 
   [2..#implicit val arbCaseClass1: Arbitrary[CaseClass1]  = Arbitrary(arb[Tuple1[[#Int#]]].map((CaseClass1.apply _).tupled))
-  implicit val caseClass1codec: RowCodec[CaseClass1] = RowCodec.caseCodec([#0#])(CaseClass1.apply)(CaseClass1.unapply)
+  implicit val caseClass1codec: RowCodec[CaseClass1] = RowCodec.caseCodec([#0#])(CaseClass1.apply)(x => Some(Tuple.fromProductTyped(x)))
   implicit val caseClass1HeaderDecoder: HeaderDecoder[CaseClass1] = HeaderDecoder.decoder([#"f1"#])(CaseClass1.apply _)
   implicit val cogenCaseClass1: Cogen[CaseClass1]    = Cogen.cogenList[Int].contramap(f => List([#f.f1#]))
   implicit val arbLegalCaseClass1: Arbitrary[LegalRow[CaseClass1]] = arbLegalValueFromEnc[Seq[String], CaseClass1, kantan.csv.codecs.type]

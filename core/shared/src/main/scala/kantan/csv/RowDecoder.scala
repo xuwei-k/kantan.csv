@@ -33,6 +33,7 @@ import kantan.codecs.collection.Factory
   * Note that a lot of types already have implicit instances: tuples, collections... moreover, the `generics` module can
   * automatically derive valid instances for a lot of common scenarios.
   */
+@SuppressWarnings(Array("org.wartremover.warts.MutableDataStructures"))
 object RowDecoder extends GeneratedRowDecoders with DecoderCompanion[Seq[String], DecodeError, codecs.type] {
 
   /** Decodes the cell found at the specified index of `ss` into the requested type.
@@ -68,6 +69,7 @@ object RowDecoder extends GeneratedRowDecoders with DecoderCompanion[Seq[String]
 }
 
 /** Provides reasonable default [[RowDecoder]] instances for various types. */
+@SuppressWarnings(Array("org.wartremover.warts.MutableDataStructures"))
 trait RowDecoderInstances {
 
   /** Turns a [[CellDecoder]] into a [[RowDecoder]], for rows that contain a single value.

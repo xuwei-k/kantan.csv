@@ -26,6 +26,7 @@ trait VersionSpecificRowEncoderInstances {
     * res1: Seq[String] = List(123, 456, 789)
     * }}}
     */
+  @SuppressWarnings(Array("org.wartremover.warts.MutableDataStructures"))
   implicit def iterable[A: CellEncoder, M[X] <: IterableOnce[X]]: RowEncoder[M[A]] =
     RowEncoder.from(_.iterator.foldLeft(Seq.newBuilder[String])((acc, a) => acc += CellEncoder[A].encode(a)).result())
 }

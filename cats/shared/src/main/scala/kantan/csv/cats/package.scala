@@ -39,6 +39,7 @@ package object cats extends CommonInstances with DecoderInstances with EncoderIn
   // - Misc. instances --------------------------------------------------------------------------------------------------
   // -------------------------------------------------------------------------------------------------------------------
 
+  @SuppressWarnings(Array("org.wartremover.warts.MutableDataStructures"))
   implicit def foldableRowEncoder[F[_]: Foldable, A: CellEncoder]: RowEncoder[F[A]] =
     RowEncoder.from { as =>
       Foldable[F]

@@ -26,6 +26,38 @@ lazy val jvmModules: Seq[ProjectReference] = Seq(
   scalazJVM
 )
 
+lazy val scala3root = project.aggregate(
+  catsJVM,
+  catsJS,
+  commons,
+  coreJVM,
+  coreJS,
+  enumeratumJVM,
+  enumeratumJS,
+  jackson,
+  java8,
+  lawsJVM,
+  lawsJS,
+  refinedJVM,
+  refinedJS,
+  scalazJVM,
+  scalazJS
+)
+
+val scala3settings = Def.settings(
+  scalaVersion := "3.3.5",
+  crossScalaVersions := Seq("3.3.5"),
+  ThisBuild / wartremoverCrossVersion := CrossVersion.binary,
+  scalacOptions += "-language:implicitConversions",
+  scalacOptions ++= {
+    if((scalaBinaryVersion.value == "3") && crossProjectPlatform.?.value.contains(JSPlatform)) {
+      Seq("-scalajs")
+    } else {
+      Nil
+    }
+  },
+)
+
 // - root projects -----------------------------------------------------------------------------------------------------
 // ---------------------------------------------------------------------------------------------------------------------
 lazy val root = Project(id = "kantan-csv", base = file("."))
@@ -82,6 +114,7 @@ lazy val core = kantanCrossProject("core")
   .settings(moduleName := "kantan.csv")
   .enablePlugins(PublishedPlugin, BoilerplatePlugin)
   .settings(
+    scala3settings,
     libraryDependencies ++= Seq(
       "com.nrinaudo" %%% "kantan.codecs" % Versions.kantanCodecs
     )
@@ -93,6 +126,7 @@ lazy val coreJS  = core.js
 
 lazy val laws = kantanCrossProject("laws")
   .settings(moduleName := "kantan.csv-laws")
+  .settings(scala3settings)
   .enablePlugins(PublishedPlugin, BoilerplatePlugin)
   .dependsOn(core)
   .settings(libraryDependencies += "com.nrinaudo" %%% "kantan.codecs-laws" % Versions.kantanCodecs)
@@ -106,6 +140,7 @@ lazy val jackson = project
   .settings(moduleName := "kantan.csv-jackson")
   .enablePlugins(PublishedPlugin)
   .dependsOn(coreJVM, lawsJVM % Test)
+  .settings(scala3settings)
   .settings(
     libraryDependencies ++= Seq(
       "com.fasterxml.jackson.dataformat" % "jackson-dataformat-csv" % Versions.jacksonCsv
@@ -116,6 +151,7 @@ lazy val commons = project
   .settings(moduleName := "kantan.csv-commons")
   .enablePlugins(PublishedPlugin)
   .dependsOn(coreJVM, lawsJVM % Test)
+  .settings(scala3settings)
   .settings(
     libraryDependencies ++= Seq(
       "org.apache.commons"      % "commons-csv"             % Versions.commonsCsv,
@@ -127,6 +163,7 @@ lazy val commons = project
 // ---------------------------------------------------------------------------------------------------------------------
 lazy val generic = kantanCrossProject("generic")
   .settings(moduleName := "kantan.csv-generic")
+  .settings(scala3settings)
   .enablePlugins(PublishedPlugin)
   .dependsOn(core, laws % Test)
   .settings(
@@ -143,6 +180,7 @@ lazy val genericJS  = generic.js
 // ---------------------------------------------------------------------------------------------------------------------
 lazy val scalaz = kantanCrossProject("scalaz")
   .settings(moduleName := "kantan.csv-scalaz")
+  .settings(scala3settings)
   .enablePlugins(PublishedPlugin)
   .dependsOn(core, laws % Test)
   .settings(
@@ -159,6 +197,7 @@ lazy val scalazJS  = scalaz.js
 // ---------------------------------------------------------------------------------------------------------------------
 lazy val cats = kantanCrossProject("cats")
   .settings(moduleName := "kantan.csv-cats")
+  .settings(scala3settings)
   .enablePlugins(PublishedPlugin)
   .dependsOn(core, laws % Test)
   .settings(
@@ -175,6 +214,7 @@ lazy val catsJS  = cats.js
 // ---------------------------------------------------------------------------------------------------------------------
 lazy val java8 = project
   .settings(
+    scala3settings,
     moduleName := "kantan.csv-java8",
     name       := "java8"
   )
@@ -191,6 +231,7 @@ lazy val java8 = project
 // ---------------------------------------------------------------------------------------------------------------------
 lazy val refined = kantanCrossProject("refined")
   .settings(moduleName := "kantan.csv-refined")
+  .settings(scala3settings)
   .enablePlugins(PublishedPlugin)
   .dependsOn(core, laws % Test)
   .settings(
@@ -207,6 +248,7 @@ lazy val refinedJS  = refined.js
 // ---------------------------------------------------------------------------------------------------------------------
 lazy val enumeratum = kantanCrossProject("enumeratum")
   .settings(moduleName := "kantan.csv-enumeratum")
+  .settings(scala3settings)
   .enablePlugins(PublishedPlugin)
   .dependsOn(core, laws % Test)
   .settings(
@@ -222,6 +264,7 @@ lazy val enumeratumJS  = enumeratum.js
 // - libra project -----------------------------------------------------------------------------------------------------
 // ---------------------------------------------------------------------------------------------------------------------
 lazy val libra = project
+  .settings(scala3settings)
   .settings(
     moduleName := "kantan.csv-libra",
     name       := "libra"

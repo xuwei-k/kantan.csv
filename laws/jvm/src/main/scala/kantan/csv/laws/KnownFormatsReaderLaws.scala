@@ -27,7 +27,7 @@ import scala.io.Codec
 trait KnownFormatsReaderLaws {
   implicit def engine: ReaderEngine
 
-  implicit val carFormat: RowCodec[Car] = RowCodec.caseCodec(1, 2, 3, 4, 0)(Car.apply)(Car.unapply)
+  implicit val carFormat: RowCodec[Car] = RowCodec.caseCodec(1, 2, 3, 4, 0)(Car.apply)(x => Some(Tuple.fromProductTyped(x)))
 
   def read(res: String): List[Car] = {
     implicit val codec: Codec = Codec.UTF8

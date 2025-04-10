@@ -36,6 +36,7 @@ package object scalaz extends DecoderInstances with EncoderInstances with Common
   implicit val csvParseErrorEqual: Equal[ParseError]                       = Equal.equalA
   implicit val csvReadErrorEqual: Equal[ReadError]                         = Equal.equalA
 
+  @SuppressWarnings(Array("org.wartremover.warts.MutableDataStructures"))
   implicit def foldableRowEncoder[F[_]: Foldable, A: CellEncoder]: RowEncoder[F[A]] =
     RowEncoder.from { as =>
       Foldable[F]

@@ -44,6 +44,7 @@ private[engine] class InternalReader private (
     ()
   }
 
+  @SuppressWarnings(Array("org.wartremover.warts.ToString"))
   private def endCell(): Unit = {
     if(cell.isEmpty) {
       if(index != mark) row += new String(characters, mark, index - mark - 1)
